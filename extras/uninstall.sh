@@ -21,9 +21,9 @@ command -v jq >/dev/null || { echo "jq is required to edit Omarchy's shell confi
 [[ -f $shell_config ]] || { echo "Missing Omarchy shell configuration: $shell_config" >&2; exit 1; }
 
 cat <<EOF
-This removes the Hive screensaver and plugins, restores the stock workspace and
-idle plugin entries that the installer changed, and restores the Starship prompt
-only if it has not been edited since installation.
+This removes the Hive screensaver and plugins, restores the stock workspace,
+idle, and lock plugin entries that the installer changed, and restores the
+Starship prompt only if it has not been edited since installation.
 EOF
 if ! $assume_yes; then
   read -r -p "Continue? [y/N] " answer
@@ -51,6 +51,18 @@ if [[ -f $state_dir/disabled-stock-idle ]]; then
   next=$(mktemp "${shell_config}.hive.XXXXXX")
   jq '
     .disabledPlugins = ((.disabledPlugins // []) | map(select(. != "omarchy.idle"))) |
+    if (.disabledPlugins | length) == 0 then del(.disabledPlugins) else . end
+    ' "$tmp_shell" > "$next"
+  mv "$next" "$tmp_shell"
+fi
+if [[ -f $state_dir/lock-installed ]]; then
+  next=$(mktemp "${shell_config}.hive.XXXXXX")
+  jq '
+    .plugins = ((.plugins // []) | map(select(.id != "hive.lock"))) |
+    if (.plugins | length) == 0 then del(.plugins) else . end |
+    .cloneSourceRestores = ((.cloneSourceRestores // []) | map(select(. != "hive.lock"))) |
+    if (.cloneSourceRestores | length) == 0 then del(.cloneSourceRestores) else . end |
+    .disabledPlugins = ((.disabledPlugins // []) | map(select(. != "omarchy.lock"))) |
     if (.disabledPlugins | length) == 0 then del(.disabledPlugins) else . end
     ' "$tmp_shell" > "$next"
   mv "$next" "$tmp_shell"
@@ -84,6 +96,10 @@ if [[ -f $state_dir/starship-installed.sha256 ]]; then
   fi
 fi
 
+if [[ -f $state_dir/lock-installed ]]; then
+  rm -rf -- "$plugin_dir/hive.lock"
+  rm -f -- "$state_dir/lock-installed"
+fi
 rm -rf -- "$data_dir" "$plugin_dir/hive.idle" "$plugin_dir/hive.workspaces"
 rm -f -- "$state_dir/installed"
 date -Iseconds > "$state_dir/uninstalled"

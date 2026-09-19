@@ -9,6 +9,7 @@ shell_config="$HOME/.config/omarchy/shell.json"
 starship_config="$HOME/.config/starship.toml"
 assume_yes=false
 with_starship=false
+with_lock_screen=false
 screensaver_seconds=""
 lock_seconds=""
 
@@ -19,6 +20,7 @@ Usage: extras/install.sh [options]
 Options:
   --yes                     Do not ask for confirmation.
   --with-starship           Install the optional Hive Starship prompt.
+  --with-lock-screen        Install the visual-only Hive lock-screen clone.
   --screensaver-seconds N   Set the idle screensaver timeout.
   --lock-seconds N          Set the idle lock timeout.
   -h, --help                Show this help.
@@ -31,6 +33,7 @@ while (($#)); do
   case "$1" in
     --yes) assume_yes=true; shift ;;
     --with-starship) with_starship=true; shift ;;
+    --with-lock-screen) with_lock_screen=true; shift ;;
     --screensaver-seconds)
       [[ $# -ge 2 ]] || { echo "Missing value for $1" >&2; exit 2; }
       screensaver_seconds=$2; shift 2 ;;
@@ -72,6 +75,50 @@ for required in \
   [[ -f $required ]] || { echo "Incomplete Hive checkout: missing $required" >&2; exit 1; }
 done
 
+if $with_lock_screen; then
+  stock_lock_dir="${OMARCHY_PATH:-/usr/share/omarchy}/shell/plugins/lock"
+  hive_lock_dir="$repo_root/extras/plugins/hive.lock"
+  for required in Service.qml LockView.qml manifest.json stock-service.sha256; do
+    [[ -f $hive_lock_dir/$required ]] || { echo "Incomplete Hive lock plugin: missing $required" >&2; exit 1; }
+  done
+  [[ -f $stock_lock_dir/Service.qml ]] || { echo "Cannot find the installed Omarchy lock service." >&2; exit 1; }
+  [[ -f /etc/pam.d/omarchy-lock-password ]] || {
+    echo "The stock Omarchy password PAM service is unavailable; refusing to install a lock clone." >&2
+    exit 1
+  }
+  expected_lock_hash=$(awk 'NR == 1 { print $1 }' "$hive_lock_dir/stock-service.sha256")
+  packaged_lock_hash=$(sha256sum "$hive_lock_dir/Service.qml" | awk '{print $1}')
+  installed_lock_hash=$(sha256sum "$stock_lock_dir/Service.qml" | awk '{print $1}')
+  if [[ $packaged_lock_hash != "$expected_lock_hash" || $installed_lock_hash != "$expected_lock_hash" ]]; then
+    cat >&2 <<EOF
+The Hive lock clone was built for a different Omarchy lock-service revision.
+Packaged:  $packaged_lock_hash
+Installed: $installed_lock_hash
+Expected:  $expected_lock_hash
+No files were changed. Update the Hive lock plugin before enabling it.
+EOF
+    exit 1
+  fi
+  omarchy plugin validate "$hive_lock_dir" >/dev/null || {
+    echo "The packaged Hive lock plugin failed Omarchy validation; no files were changed." >&2
+    exit 1
+  }
+  if jq -e '(.disabledPlugins // []) | index("omarchy.lock") != null' "$shell_config" >/dev/null \
+      && [[ ! -f $state_dir/lock-installed ]]; then
+    echo "The stock omarchy.lock plugin is already disabled; refusing to replace an unknown lock configuration." >&2
+    exit 1
+  fi
+  shopt -s nullglob
+  for manifest in "$plugin_dir"/*/manifest.json; do
+    [[ $manifest == "$plugin_dir/hive.lock/manifest.json" ]] && continue
+    if [[ $(jq -r '.omarchy.clonedFrom // empty' "$manifest" 2>/dev/null) == "omarchy.lock" ]]; then
+      echo "Another omarchy.lock clone is installed: $manifest" >&2
+      exit 1
+    fi
+  done
+  shopt -u nullglob
+fi
+
 cat <<EOF
 The optional Hive extras will:
   - copy the GPU screensaver to $data_dir
@@ -81,6 +128,11 @@ The optional Hive extras will:
   - preserve your current idle timings unless timeout options were supplied
 EOF
 $with_starship && printf '  - back up and replace %s with the Hive Starship prompt\n' "$starship_config"
+$with_lock_screen && cat <<EOF
+  - install hive.lock as a verified visual clone of Omarchy 4.0.3's lock service
+  - disable omarchy.lock in shell.json while routing stock lock IPC to hive.lock
+  - leave PAM files and the system-owned omarchy.lock plugin untouched
+EOF
 [[ -n $screensaver_seconds ]] && printf '  - set the screensaver timeout to %s seconds\n' "$screensaver_seconds"
 [[ -n $lock_seconds ]] && printf '  - set the lock timeout to %s seconds\n' "$lock_seconds"
 printf 'Backups and installation state will be stored in %s\n' "$state_dir"
@@ -118,6 +170,10 @@ for id in hive.idle hive.workspaces; do
     exit 1
   fi
 done
+if $with_lock_screen && [[ -e $plugin_dir/hive.lock && ! -f $state_dir/lock-installed ]]; then
+  echo "Refusing to replace pre-existing plugin directory: $plugin_dir/hive.lock" >&2
+  exit 1
+fi
 if [[ -e $data_dir && ! -f $state_dir/installed ]]; then
   echo "Refusing to replace pre-existing data directory: $data_dir" >&2
   exit 1
@@ -126,30 +182,51 @@ fi
 tmp_data=$(mktemp -d "${data_dir}.tmp.XXXXXX")
 tmp_idle=$(mktemp -d "$plugin_dir/.hive.idle.tmp.XXXXXX")
 tmp_workspaces=$(mktemp -d "$plugin_dir/.hive.workspaces.tmp.XXXXXX")
-cleanup() { rm -rf -- "$tmp_data" "$tmp_idle" "$tmp_workspaces"; }
+tmp_lock=""
+cleanup() {
+  rm -rf -- "$tmp_data" "$tmp_idle" "$tmp_workspaces"
+  [[ -z $tmp_lock ]] || rm -rf -- "$tmp_lock"
+}
 trap cleanup EXIT
 cp -a "$repo_root/extras/screensaver" "$tmp_data/"
 cp -a "$repo_root/extras/plugins/hive.idle/." "$tmp_idle/"
 cp -a "$repo_root/extras/plugins/hive.workspaces/." "$tmp_workspaces/"
+if $with_lock_screen; then
+  tmp_lock=$(mktemp -d "$plugin_dir/.hive.lock.tmp.XXXXXX")
+  cp -a "$repo_root/extras/plugins/hive.lock/." "$tmp_lock/"
+fi
 rm -rf -- "$data_dir" "$plugin_dir/hive.idle" "$plugin_dir/hive.workspaces"
 mv "$tmp_data" "$data_dir"
 mv "$tmp_idle" "$plugin_dir/hive.idle"
 mv "$tmp_workspaces" "$plugin_dir/hive.workspaces"
+if $with_lock_screen; then
+  rm -rf -- "$plugin_dir/hive.lock"
+  mv "$tmp_lock" "$plugin_dir/hive.lock"
+  tmp_lock=""
+fi
 trap - EXIT
 
 tmp_shell=$(mktemp "${shell_config}.hive.XXXXXX")
 jq \
   --arg screensaver "$screensaver_seconds" \
-  --arg lock "$lock_seconds" '
+  --arg lock "$lock_seconds" \
+  --argjson withLock "$with_lock_screen" '
   .bar.layout |= ((. // {}) | with_entries(.value |= map(if .id == "omarchy.workspaces" then .id = "hive.workspaces" else . end))) |
   .plugins = ((.plugins // []) | if any(.[]; .id == "hive.idle") then . else . + [{"id":"hive.idle"}] end) |
   .disabledPlugins = ((.disabledPlugins // []) | if index("omarchy.idle") then . else . + ["omarchy.idle"] end) |
   .cloneSourceRestores = ((.cloneSourceRestores // []) | if index("hive.idle") then . else . + ["hive.idle"] end) |
+  if $withLock then
+    .plugins = ((.plugins // []) | if any(.[]; .id == "hive.lock") then . else . + [{"id":"hive.lock"}] end) |
+    .disabledPlugins = ((.disabledPlugins // []) | if index("omarchy.lock") then . else . + ["omarchy.lock"] end) |
+    .cloneSourceRestores = ((.cloneSourceRestores // []) | if index("hive.lock") then . else . + ["hive.lock"] end)
+  else . end |
   if $screensaver != "" then .idle.screensaver = ($screensaver | tonumber) else . end |
   if $lock != "" then .idle.lock = ($lock | tonumber) else . end
   ' "$shell_config" > "$tmp_shell"
 jq empty "$tmp_shell"
 mv "$tmp_shell" "$shell_config"
+
+$with_lock_screen && touch "$state_dir/lock-installed"
 
 if [[ -n $screensaver_seconds || -n $lock_seconds ]]; then
   jq -c '.idle // null' "$shell_config" > "$state_dir/installed-idle.json"

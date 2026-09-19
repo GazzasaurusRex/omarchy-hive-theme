@@ -58,6 +58,21 @@ substitute or mock artwork.
 | [Containment Door](backgrounds/03-containment-door.png) | [Facility Schematic](backgrounds/07-facility-schematic.png) |
 | [T-virus Laboratory](backgrounds/04-t-virus-laboratory.png) | [CCTV Surveillance](backgrounds/08-cctv-surveillance.png) |
 
+## Terminal and desktop styling
+
+This real desktop capture shows the terminal palette, typography, window
+borders, Hive sector workspaces, and normal bar treatment together.
+
+![Hive desktop and terminal](docs/screenshots/desktop-terminal.png)
+
+## Hive lock screen
+
+The Hive security-terminal lock screen is part of the optional Hive Extras
+package. It changes only the visual presentation while preserving Omarchy's
+normal PAM authentication and secure session-lock flow.
+
+![Hive security lock screen](docs/screenshots/lock-screen.png)
+
 ## Optional Hive extras
 
 The standard `omarchy theme install` command clones the complete repository to
@@ -79,13 +94,14 @@ They add:
   scene animation;
 - a Hive-aware replacement for Omarchy's idle service;
 - compact two-digit “sector” workspace indicators;
+- an opt-in visual Hive clone of Omarchy's stock lock screen;
 - an optional Hive Starship prompt;
 - optional, disabled-by-default synthetic event sounds.
 
 The installer copies the screensaver to
 `~/.local/share/omarchy-hive-theme/`, installs two user-owned Omarchy Shell
-plugins, edits only their relevant entries in
-`~/.config/omarchy/shell.json`, and records backups under
+plugins by default and the lock clone only when requested, edits only their
+relevant entries in `~/.config/omarchy/shell.json`, and records backups under
 `~/.local/state/omarchy-hive-theme/`. It does not use `sudo`.
 
 ```bash
@@ -102,6 +118,23 @@ Existing idle timings are preserved by default. To reproduce the original
 ```
 
 Add `--with-starship` if you also want the prompt. Run `--help` for all options.
+
+The Hive lock screen is separately opt-in:
+
+```bash
+~/.config/omarchy/themes/hive/extras/lock-screen-enable.sh
+```
+
+This option copies the current Omarchy 4.0.3 lock plugin without changing its
+authentication service, then replaces only its visual `LockView.qml`. It
+refuses to install if the installed stock lock service does not match the
+recorded upstream SHA-256. PAM files, fingerprint enrollment, and system-owned
+Omarchy files are never modified. Restore only the stock visual lock screen
+with:
+
+```bash
+~/.config/omarchy/themes/hive/extras/lock-screen-disable.sh
+```
 
 ### Screensaver scenes
 
@@ -138,17 +171,6 @@ theme preview and the screensaver is not activated by the base installation.
 #### Red Queen core
 
 ![Red Queen screensaver](docs/screenshots/red-queen.png)
-
-## Desktop screenshots
-
-### Desktop and terminal
-
-![Hive desktop and terminal](docs/screenshots/desktop-terminal.png)
-
-Real launcher/menu and lock-screen captures are still needed. Exact views,
-filenames, destinations, and a privacy checklist are in
-[`docs/screenshots/CAPTURE.md`](docs/screenshots/CAPTURE.md). They are
-deliberately not represented by fabricated mock-ups.
 
 ## Requirements
 
@@ -226,6 +248,9 @@ Timestamped and first-install backups are retained in
 
 - The optional Shell plugins track Omarchy 4's plugin API and may require an
   update after a future major Omarchy release.
+- The optional lock clone is intentionally pinned to the exact Omarchy 4.0.3
+  stock lock-service revision and refuses installation after that service
+  changes, pending a security review and rebase.
 - Non-16:9 screens use dark letterboxing to preserve the scene geometry.
 - Event sounds are included as optional assets but are not bound to desktop
   actions.
