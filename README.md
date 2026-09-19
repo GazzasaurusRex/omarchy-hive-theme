@@ -60,7 +60,7 @@ substitute or mock artwork.
 
 ## Terminal and desktop styling
 
-This real desktop capture shows the terminal palette, typography, window
+This desktop capture shows the terminal palette, typography, window
 borders, Hive sector workspaces, and normal bar treatment together.
 
 ![Hive desktop and terminal](docs/screenshots/desktop-terminal.png)
