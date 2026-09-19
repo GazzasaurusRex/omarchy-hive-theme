@@ -4,6 +4,12 @@ An unofficial Omarchy theme inspired by the clinical, industrial atmosphere of
 the 2002 *Resident Evil* film: sterile laboratories, containment systems,
 gunmetal surfaces, cold terminal light, and restrained emergency red.
 
+## Desktop preview
+
+This is a real capture of the normal Omarchy desktop with the Hive bar,
+two-digit sector workspaces, active-window border, wallpaper, and terminal
+palette visible. It is not a screensaver image.
+
 ![The Hive theme preview](preview.png)
 
 This is an unofficial fan project. It is not affiliated with, authorized by,
@@ -37,17 +43,34 @@ Cycle through the included wallpapers with:
 omarchy theme bg next
 ```
 
+## Wallpaper gallery
+
+All eight wallpapers below are the artwork shipped in `backgrounds/`. The
+contact sheet is assembled directly from those files; it does not contain
+substitute or mock artwork.
+
+![The Hive wallpaper collection](docs/screenshots/wallpaper-gallery.png)
+
+| 01–04 | 05–08 |
+|---|---|
+| [Emergency Corridor](backgrounds/01-emergency-corridor.png) | [Red Queen Core](backgrounds/05-red-queen-core.png) |
+| [Sterile Laboratory](backgrounds/02-sterile-laboratory.png) | [Minimal Corporate](backgrounds/06-minimal-corporate.png) |
+| [Containment Door](backgrounds/03-containment-door.png) | [Facility Schematic](backgrounds/07-facility-schematic.png) |
+| [T-virus Laboratory](backgrounds/04-t-virus-laboratory.png) | [CCTV Surveillance](backgrounds/08-cctv-surveillance.png) |
+
 ## Optional Hive extras
 
-The extras are deliberately not installed by `omarchy theme install`. Review
-[`extras/README.md`](extras/README.md) before enabling them.
+The standard `omarchy theme install` command clones the complete repository to
+`~/.config/omarchy/themes/hive/`, so `extras/` remains available on disk.
+Omarchy 4.0.3 strips only explicitly unsafe top-level theme files when applying
+a repository-installed theme: Lua, terminal configurations, `vscode.json`, and
+symlinks. It does not use a sparse checkout for this URL-install flow.
 
-The URL installation command above leaves the repository checkout under
-`~/.config/omarchy/themes/hive/`, so the extras installer is available there.
-The themes.omarchy.org marketplace uses a sparse base-theme checkout and does
-not download executable extras; marketplace users who want them must clone or
-download this repository separately and run the reviewed installer from that
-checkout.
+Nothing in `extras/` executes, registers a plugin, changes idle behavior, or
+edits user configuration during normal theme installation or theme switching.
+The extras remain inert unless the user explicitly runs `extras/install.sh`.
+Review [`extras/README.md`](extras/README.md) before doing so. This behavior
+matches the current [Omarchy theme documentation](https://github.com/omacom/omarchy/blob/quattro/manual/43-making-your-own-theme.md#what-an-installed-theme-can-contain).
 
 They add:
 
@@ -103,23 +126,28 @@ Preview it manually:
 
 Move the pointer, click, scroll, or press a key to dismiss it.
 
-## Screenshots
+### Optional screensaver examples
+
+These images demonstrate the optional GPU screensaver. They are not the main
+theme preview and the screensaver is not activated by the base installation.
+
+#### T-virus diagnostic
+
+![T-virus diagnostic screensaver](docs/screenshots/t-virus-diagnostic.png)
+
+#### Red Queen core
+
+![Red Queen screensaver](docs/screenshots/red-queen.png)
+
+## Desktop screenshots
 
 ### Desktop and terminal
 
 ![Hive desktop and terminal](docs/screenshots/desktop-terminal.png)
 
-### T-virus diagnostic
-
-![T-virus diagnostic screensaver](docs/screenshots/t-virus-diagnostic.png)
-
-### Red Queen core
-
-![Red Queen screensaver](docs/screenshots/red-queen.png)
-
-A privacy checklist for capturing the launcher/menu, lock screen, and an
-additional facility-terminal scene is in
-[`docs/screenshots/CAPTURE.md`](docs/screenshots/CAPTURE.md). Those views are
+Real launcher/menu and lock-screen captures are still needed. Exact views,
+filenames, destinations, and a privacy checklist are in
+[`docs/screenshots/CAPTURE.md`](docs/screenshots/CAPTURE.md). They are
 deliberately not represented by fabricated mock-ups.
 
 ## Requirements

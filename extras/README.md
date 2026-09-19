@@ -3,6 +3,11 @@
 These files are executable and are intentionally separate from the standard
 Omarchy color theme.
 
+`omarchy theme install` clones the repository and leaves this directory on
+disk, but it does not execute these files, register the plugins, or change idle
+settings. Nothing here is enabled until the user explicitly runs
+`extras/install.sh`.
+
 Before confirmation, `install.sh` checks dependencies and prints every class of
 change it will make. It runs as the normal user and does not call `sudo`.
 
