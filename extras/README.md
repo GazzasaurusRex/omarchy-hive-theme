@@ -30,12 +30,13 @@ so its section and surrounding widgets remain unchanged.
 The lock screen is an additional opt-in because it is an authentication-capable
 Omarchy Shell plugin. It is not installed by the default extras command.
 
-`hive.lock` is cloned directly from the Omarchy 4.0.3 `omarchy.lock` plugin.
-Its `Service.qml` is byte-for-byte identical to the stock service; only
-`LockView.qml` changes the presentation. The installer verifies that both the
-packaged and installed stock services match the recorded SHA-256 before it
-changes anything. If Omarchy has updated the stock lock service, installation
-stops so that an older authentication implementation is never substituted.
+`hive.lock` is cloned directly from the stock `omarchy.lock` plugin. Its
+`Service.qml` is byte-for-byte identical to the revision verified on Omarchy
+4.0.3 and 4.0.4; only `LockView.qml` changes the presentation. The installer
+verifies that both the packaged and installed stock services match the recorded
+SHA-256 before it changes anything. If Omarchy has updated the stock lock
+service, installation stops so that an older authentication implementation is
+never substituted.
 
 The lock option:
 

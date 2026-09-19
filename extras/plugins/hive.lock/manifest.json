@@ -4,7 +4,7 @@
   "name": "Hive Security Lock",
   "version": "1.0.0",
   "author": "GazzasaurusRex, derived from Omarchy",
-  "description": "Visual-only Hive presentation of the Omarchy 4.0.3 session lock.",
+  "description": "Visual-only Hive presentation of Omarchy's verified stock session lock.",
   "omarchy": {
     "clonedFrom": "omarchy.lock",
     "capabilities": [

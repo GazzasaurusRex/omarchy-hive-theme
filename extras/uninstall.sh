@@ -19,6 +19,9 @@ esac
 [[ -f $state_dir/installed ]] || { echo "Hive extras are not recorded as installed." >&2; exit 1; }
 command -v jq >/dev/null || { echo "jq is required to edit Omarchy's shell configuration safely." >&2; exit 1; }
 [[ -f $shell_config ]] || { echo "Missing Omarchy shell configuration: $shell_config" >&2; exit 1; }
+[[ -f $state_dir/shell.before-extras.json ]] || { echo "Missing the pre-install Shell snapshot; refusing a partial rollback." >&2; exit 1; }
+jq empty "$state_dir/shell.before-extras.json" || { echo "Invalid pre-install Shell snapshot." >&2; exit 1; }
+plugins_key_existed=$(jq 'has("plugins")' "$state_dir/shell.before-extras.json")
 
 cat <<EOF
 This removes the Hive screensaver and plugins, restores the stock workspace,
@@ -35,9 +38,9 @@ mkdir -p "$state_dir/backups/$timestamp"
 cp -a "$shell_config" "$state_dir/backups/$timestamp/shell.json"
 
 tmp_shell=$(mktemp "${shell_config}.hive.XXXXXX")
-jq '
+jq --argjson keepPluginsKey "$plugins_key_existed" '
   .plugins = ((.plugins // []) | map(select(.id != "hive.idle"))) |
-  if (.plugins | length) == 0 then del(.plugins) else . end |
+  if ((.plugins | length) == 0 and ($keepPluginsKey | not)) then del(.plugins) else . end |
   .cloneSourceRestores = ((.cloneSourceRestores // []) | map(select(. != "hive.idle"))) |
   if (.cloneSourceRestores | length) == 0 then del(.cloneSourceRestores) else . end
   ' "$shell_config" > "$tmp_shell"
@@ -57,9 +60,9 @@ if [[ -f $state_dir/disabled-stock-idle ]]; then
 fi
 if [[ -f $state_dir/lock-installed ]]; then
   next=$(mktemp "${shell_config}.hive.XXXXXX")
-  jq '
+  jq --argjson keepPluginsKey "$plugins_key_existed" '
     .plugins = ((.plugins // []) | map(select(.id != "hive.lock"))) |
-    if (.plugins | length) == 0 then del(.plugins) else . end |
+    if ((.plugins | length) == 0 and ($keepPluginsKey | not)) then del(.plugins) else . end |
     .cloneSourceRestores = ((.cloneSourceRestores // []) | map(select(. != "hive.lock"))) |
     if (.cloneSourceRestores | length) == 0 then del(.cloneSourceRestores) else . end |
     .disabledPlugins = ((.disabledPlugins // []) | map(select(. != "omarchy.lock"))) |
@@ -98,7 +101,7 @@ fi
 
 if [[ -f $state_dir/lock-installed ]]; then
   rm -rf -- "$plugin_dir/hive.lock"
-  rm -f -- "$state_dir/lock-installed"
+  rm -f -- "$state_dir/lock-installed" "$state_dir/shell.before-lock.json"
 fi
 rm -rf -- "$data_dir" "$plugin_dir/hive.idle" "$plugin_dir/hive.workspaces"
 rm -f -- "$state_dir/installed"

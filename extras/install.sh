@@ -129,7 +129,7 @@ The optional Hive extras will:
 EOF
 $with_starship && printf '  - back up and replace %s with the Hive Starship prompt\n' "$starship_config"
 $with_lock_screen && cat <<EOF
-  - install hive.lock as a verified visual clone of Omarchy 4.0.3's lock service
+  - install hive.lock as a hash-verified visual clone of Omarchy's lock service
   - disable omarchy.lock in shell.json while routing stock lock IPC to hive.lock
   - leave PAM files and the system-owned omarchy.lock plugin untouched
 EOF

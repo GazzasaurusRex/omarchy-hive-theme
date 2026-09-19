@@ -86,6 +86,9 @@ fi
 timestamp=$(date +%Y%m%dT%H%M%S-%N)
 mkdir -p "$state_dir/backups/$timestamp" "$plugin_dir"
 cp -a "$shell_config" "$state_dir/backups/$timestamp/shell.json"
+if ! $already_managed; then
+  cp -a "$shell_config" "$state_dir/shell.before-lock.json"
+fi
 
 tmp_lock=$(mktemp -d "$plugin_dir/.hive.lock.tmp.XXXXXX")
 tmp_shell=$(mktemp "${shell_config}.hive.XXXXXX")

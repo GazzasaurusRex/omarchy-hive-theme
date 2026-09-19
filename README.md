@@ -77,9 +77,10 @@ normal PAM authentication and secure session-lock flow.
 
 The standard `omarchy theme install` command clones the complete repository to
 `~/.config/omarchy/themes/hive/`, so `extras/` remains available on disk.
-Omarchy 4.0.3 strips only explicitly unsafe top-level theme files when applying
-a repository-installed theme: Lua, terminal configurations, `vscode.json`, and
-symlinks. It does not use a sparse checkout for this URL-install flow.
+Verified on Omarchy 4.0.4: the installer strips only explicitly unsafe
+top-level theme files when applying a repository-installed theme: Lua, terminal
+configurations, `vscode.json`, and symlinks. It does not use a sparse checkout
+for this URL-install flow.
 
 Nothing in `extras/` executes, registers a plugin, changes idle behavior, or
 edits user configuration during normal theme installation or theme switching.
@@ -125,12 +126,13 @@ The Hive lock screen is separately opt-in:
 ~/.config/omarchy/themes/hive/extras/lock-screen-enable.sh
 ```
 
-This option copies the current Omarchy 4.0.3 lock plugin without changing its
-authentication service, then replaces only its visual `LockView.qml`. It
-refuses to install if the installed stock lock service does not match the
-recorded upstream SHA-256. PAM files, fingerprint enrollment, and system-owned
-Omarchy files are never modified. Restore only the stock visual lock screen
-with:
+This option copies the verified stock Omarchy lock plugin without changing its
+authentication service, then replaces only its visual `LockView.qml`. The
+included service revision is verified against Omarchy 4.0.3 and 4.0.4. The
+installer refuses to continue if the installed stock service does not match
+the recorded upstream SHA-256. PAM files, fingerprint enrollment, and
+system-owned Omarchy files are never modified. Restore only the stock visual
+lock screen with:
 
 ```bash
 ~/.config/omarchy/themes/hive/extras/lock-screen-disable.sh
@@ -239,6 +241,18 @@ Run the installer again; it is idempotent. Then use:
 omarchy-shell shell rescanPlugins
 ```
 
+**The screensaver never starts automatically**
+
+Check whether Omarchy's Stay Awake indicator is enabled:
+
+```bash
+omarchy-shell idle status
+```
+
+An `"enabled": false` result means Stay Awake is intentionally suppressing
+both idle timers. Disable Stay Awake from the bar before testing automatic
+screensaver and lock activation.
+
 **Restore the exact pre-install Shell configuration**
 
 Timestamped and first-install backups are retained in
@@ -248,9 +262,9 @@ Timestamped and first-install backups are retained in
 
 - The optional Shell plugins track Omarchy 4's plugin API and may require an
   update after a future major Omarchy release.
-- The optional lock clone is intentionally pinned to the exact Omarchy 4.0.3
-  stock lock-service revision and refuses installation after that service
-  changes, pending a security review and rebase.
+- The optional lock clone is intentionally pinned by SHA-256 to the stock lock
+  service revision verified on Omarchy 4.0.3 and 4.0.4. It refuses installation
+  when that service changes, pending a security review and rebase.
 - Non-16:9 screens use dark letterboxing to preserve the scene geometry.
 - Event sounds are included as optional assets but are not bound to desktop
   actions.

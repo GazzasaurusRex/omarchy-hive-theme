@@ -23,6 +23,11 @@ if [[ $(jq -r '.id + ":" + (.omarchy.clonedFrom // "")' "$lock_plugin/manifest.j
   echo "Refusing to remove an unrecognized plugin directory: $lock_plugin" >&2
   exit 1
 fi
+keep_plugins_key=false
+if [[ -f $state_dir/shell.before-lock.json ]]; then
+  jq empty "$state_dir/shell.before-lock.json" || { echo "Invalid pre-lock Shell snapshot." >&2; exit 1; }
+  keep_plugins_key=$(jq 'has("plugins")' "$state_dir/shell.before-lock.json")
+fi
 
 cat <<EOF
 This will restore the stock omarchy.lock plugin in $shell_config and remove:
@@ -40,9 +45,9 @@ mkdir -p "$state_dir/backups/$timestamp"
 cp -a "$shell_config" "$state_dir/backups/$timestamp/shell.json"
 
 tmp_shell=$(mktemp "${shell_config}.hive.XXXXXX")
-jq '
+jq --argjson keepPluginsKey "$keep_plugins_key" '
   .plugins = ((.plugins // []) | map(select(.id != "hive.lock"))) |
-  if (.plugins | length) == 0 then del(.plugins) else . end |
+  if ((.plugins | length) == 0 and ($keepPluginsKey | not)) then del(.plugins) else . end |
   .cloneSourceRestores = ((.cloneSourceRestores // []) | map(select(. != "hive.lock"))) |
   if (.cloneSourceRestores | length) == 0 then del(.cloneSourceRestores) else . end |
   .disabledPlugins = ((.disabledPlugins // []) | map(select(. != "omarchy.lock"))) |
@@ -54,7 +59,7 @@ mv "$tmp_shell" "$shell_config"
 # Restore the stock service in the running shell before removing the clone.
 timeout 3 omarchy-shell shell rescanPlugins >/dev/null 2>&1 || true
 rm -rf -- "$lock_plugin"
-rm -f -- "$state_dir/lock-installed"
+rm -f -- "$state_dir/lock-installed" "$state_dir/shell.before-lock.json"
 timeout 3 omarchy-shell shell rescanPlugins >/dev/null 2>&1 || true
 
 echo "Hive lock screen disabled; stock omarchy.lock restored."
