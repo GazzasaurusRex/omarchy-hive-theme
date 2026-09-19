@@ -6,9 +6,9 @@ gunmetal surfaces, cold terminal light, and restrained emergency red.
 
 ## Desktop preview
 
-This is a real capture of the normal Omarchy desktop with the Hive bar,
+This is a capture of the normal Omarchy desktop with the Hive bar,
 two-digit sector workspaces, active-window border, wallpaper, and terminal
-palette visible. It is not a screensaver image.
+palette visible.
 
 ![The Hive theme preview](preview.png)
 
