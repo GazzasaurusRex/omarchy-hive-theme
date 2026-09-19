@@ -1,0 +1,36 @@
+mode = "dark"
+
+# Hive workstation palette: cold clinical whites over carbon and gunmetal,
+# with Umbrella red reserved for focus, selection, and alarm states.
+accent = "#b5121b"
+selection = "#361418"
+muted = "#687078"
+
+background = "#0b0d0f"
+dark_background = "#070809"
+darker_background = "#030405"
+lighter_background = "#171b1f"
+
+foreground = "#d8dde1"
+dark_foreground = "#89929a"
+light_foreground = "#e8ecef"
+bright_foreground = "#f7f9fa"
+
+hyprland_active_border = "rgba(b5121bee) rgba(641018dd) 90deg"
+hyprland_inactive_border = "rgba(343a40bb)"
+
+red = "#c51b27"
+yellow = "#c49a52"
+orange = "#b86b3c"
+green = "#6f9b79"
+cyan = "#6d9da3"
+blue = "#607f99"
+magenta = "#8e5f76"
+brown = "#735d52"
+
+bright_red = "#ff3341"
+bright_yellow = "#e2bd70"
+bright_green = "#8fba98"
+bright_cyan = "#8dbbc0"
+bright_blue = "#84a6c0"
+bright_magenta = "#b17d95"

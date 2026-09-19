@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs><pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="#d8dde1" opacity=".025"/></pattern></defs>
+  <rect width="1920" height="1080" fill="#030405"/><rect width="1920" height="1080" fill="url(#scan)"/>
+  <g font-family="JetBrains Mono,monospace">
+    <text x="64" y="74" fill="#d8dde1" font-size="25" letter-spacing="7">HIVE CCTV // SURVEILLANCE NETWORK</text>
+    <text x="1856" y="74" text-anchor="end" fill="#b5121b" font-size="16" letter-spacing="3">RECORDING // INTERNAL</text>
+    <g fill="#0b0d0f" stroke="#343a40" stroke-width="2"><rect x="64" y="120" width="872" height="390"/><rect x="984" y="120" width="872" height="390"/><rect x="64" y="558" width="872" height="390"/><rect x="984" y="558" width="872" height="390"/></g>
+    <g fill="#687078" font-size="16" letter-spacing="3"><text x="90" y="155">CAM 01 // LAB CORRIDOR</text><text x="1010" y="155">CAM 04 // CONTAINMENT</text><text x="90" y="593">CAM 07 // CENTRAL LIFT</text><text x="1010" y="593">CAM 12 // RED QUEEN CORE</text></g>
+    <g fill="none" stroke="#687078" opacity=".42">
+      <path d="M150 430L360 210H690L850 430M1090 430L1260 220H1570L1760 430"/><path d="M190 870H810L690 650H330ZM1100 870L1260 680H1600L1760 870"/>
+      <path d="M500 210V430M1420 220V430M500 650V870M1420 680V870"/>
+    </g>
+    <g fill="#b5121b"><circle cx="905" cy="150" r="5"/><circle cx="1825" cy="150" r="5"/><circle cx="905" cy="588" r="5"/><circle cx="1825" cy="588" r="5"/></g>
+    <g fill="#343a40" font-size="13"><text x="90" y="488">FEED 99.7% // 00:17:42:11</text><text x="1010" y="488">FEED 99.9% // 00:17:42:11</text><text x="90" y="926">FEED 98.6% // 00:17:42:11</text><text x="1010" y="926">FEED 100% // 00:17:42:11</text></g>
+    <text x="64" y="1025" fill="#687078" font-size="14" letter-spacing="3">BIOHAZARD CONTAINMENT ACTIVE // SECTOR STATUS: LOCKED</text>
+  </g>
+</svg>

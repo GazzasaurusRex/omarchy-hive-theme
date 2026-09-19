@@ -1,0 +1,10 @@
+#!/bin/bash
+set -euo pipefail
+
+theme=$(cat "$HOME/.local/state/omarchy/current/theme.name" 2>/dev/null || true)
+if [[ $theme == "hive" ]]; then
+  dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+  exec "$dir/launch"
+fi
+
+exec omarchy-launch-screensaver

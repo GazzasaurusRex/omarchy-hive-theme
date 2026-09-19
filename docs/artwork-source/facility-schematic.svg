@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <pattern id="micro" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#171b1f" stroke-width="1"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1920" height="1080" fill="#07090b"/><rect width="1920" height="1080" fill="url(#micro)" opacity=".7"/>
+  <g font-family="JetBrains Mono,monospace">
+    <text x="78" y="90" fill="#d8dde1" font-size="28" letter-spacing="8">THE HIVE // FACILITY SCHEMATIC</text>
+    <text x="78" y="126" fill="#687078" font-size="14" letter-spacing="3">RACCOON CITY RESEARCH DIVISION // INTERNAL</text>
+    <text x="1842" y="90" text-anchor="end" fill="#b5121b" font-size="18" letter-spacing="4">RED QUEEN ONLINE</text>
+    <path d="M78 158H1842" stroke="#343a40"/>
+    <g fill="none" stroke="#687078" stroke-width="2">
+      <rect x="188" y="250" width="340" height="210"/><rect x="690" y="208" width="540" height="294"/><rect x="1390" y="250" width="340" height="210"/>
+      <rect x="188" y="630" width="340" height="210"/><rect x="690" y="590" width="540" height="294"/><rect x="1390" y="630" width="340" height="210"/>
+      <path d="M528 355H690M1230 355H1390M358 460V630M960 502V590M1560 460V630"/>
+    </g>
+    <g fill="#0b0d0f" stroke="#b5121b" stroke-width="3" filter="url(#glow)"><circle cx="608" cy="355" r="8"/><circle cx="1310" cy="355" r="8"/><circle cx="960" cy="546" r="8"/></g>
+    <g fill="#d8dde1" font-size="20" letter-spacing="4">
+      <text x="220" y="295">SECTOR 01</text><text x="722" y="253">CENTRAL CONTROL</text><text x="1422" y="295">SECTOR 02</text>
+      <text x="220" y="675">RESEARCH A</text><text x="722" y="635">RED QUEEN CORE</text><text x="1422" y="675">CONTAINMENT</text>
+    </g>
+    <g fill="#687078" font-size="14">
+      <text x="220" y="330">BIOMETRIC ACCESS</text><text x="220" y="355">STATUS // SECURE</text>
+      <text x="722" y="290">SECURITY SYSTEM ACTIVE</text><text x="722" y="315">LIFT CONTROL // LOCKED</text>
+      <text x="1422" y="330">POWER DISTRIBUTION</text><text x="1422" y="355">STATUS // NOMINAL</text>
+      <text x="220" y="710">T-VIRUS DIAGNOSTICS</text><text x="220" y="735">PRESSURE // NEGATIVE</text>
+      <text x="722" y="672">CORE NETWORK // ISOLATED</text><text x="722" y="697">AI OVERSIGHT // ACTIVE</text>
+      <text x="1422" y="710">BIOHAZARD CONTAINMENT</text><text x="1422" y="735">LEVEL 4 // ARMED</text>
+    </g>
+    <g fill="#b5121b" font-size="13" letter-spacing="2"><text x="78" y="1015">ACCESS RESTRICTED</text><text x="1842" y="1015" text-anchor="end">SECURITY REVISION 02.1</text></g>
+  </g>
+</svg>
