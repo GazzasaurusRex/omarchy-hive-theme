@@ -53,10 +53,10 @@ substitute or mock artwork.
 
 | 01–04 | 05–08 |
 |---|---|
-| [Emergency Corridor](backgrounds/01-emergency-corridor.png) | [Red Queen Core](backgrounds/05-red-queen-core.png) |
-| [Sterile Laboratory](backgrounds/02-sterile-laboratory.png) | [Minimal Corporate](backgrounds/06-minimal-corporate.png) |
-| [Containment Door](backgrounds/03-containment-door.png) | [Facility Schematic](backgrounds/07-facility-schematic.png) |
-| [T-virus Laboratory](backgrounds/04-t-virus-laboratory.png) | [CCTV Surveillance](backgrounds/08-cctv-surveillance.png) |
+| [Emergency Corridor](backgrounds/01-emergency-corridor.webp) | [Red Queen Core](backgrounds/05-red-queen-core.webp) |
+| [Sterile Laboratory](backgrounds/02-sterile-laboratory.webp) | [Minimal Corporate](backgrounds/06-minimal-corporate.png) |
+| [Containment Door](backgrounds/03-containment-door.webp) | [Facility Schematic](backgrounds/07-facility-schematic.png) |
+| [T-virus Laboratory](backgrounds/04-t-virus-laboratory.webp) | [CCTV Surveillance](backgrounds/08-cctv-surveillance.png) |
 
 ## Terminal and desktop styling
 
